@@ -26,7 +26,7 @@ function AddTask({onAdd}) {
                 <label>Day</label>
                 <input type='text' placeholder='Add Day & Time' value={day} onChange={(e)=> setDay(e.target.value)}/>
             </div>
-            <div className='form-control form-control-check'>
+            <div className='form-control form-control-check' style={{display: 'flex'}}>
                 <label>Set Reminder</label>
                 <input type='checkbox' checked={reminder} value={reminder} onChange={(e)=>setReminder(e.currentTarget.checked)}/>
             </div>

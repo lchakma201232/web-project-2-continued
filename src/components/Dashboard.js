@@ -4,8 +4,8 @@ import Tasks from './Tasks'
 import AddTask from './AddTask'
 import {Container,Button} from "react-bootstrap"
 import { useAuth } from '../context/AuthContext'
-import {useHistory,Link} from 'react-router-dom'
-function Dashboard({stateset}) {
+import {useHistory} from 'react-router-dom'
+function Dashboard() {
   const [showAddTask,setShowAddTask]=useState(false)
   const history = useHistory()
   const [tasks,setTasks] = useState([
@@ -57,8 +57,8 @@ function Dashboard({stateset}) {
     }
 
     return (
-    <Container className="d-flex align-items-center justify-content-center" style={{minHeight:"70vh"}}>
-    <div className="container12">
+    <Container style={{marginTop: '15vh'}}>
+    <div className="w-100 container12">
         <h2>{currentUser.email}</h2> 
         <Header onAdd={() => setShowAddTask(!showAddTask)} showAdd={showAddTask}/>
         {showAddTask && <AddTask onAdd={addTask}/>
