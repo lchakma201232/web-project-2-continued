@@ -57,9 +57,10 @@ function Dashboard() {
     }
 
     return (
+        <>
+        <h2>{currentUser.email}</h2> 
     <Container style={{marginTop: '15vh'}}>
     <div className="w-100 container12">
-        <h2>{currentUser.email}</h2> 
         <Header onAdd={() => setShowAddTask(!showAddTask)} showAdd={showAddTask}/>
         {showAddTask && <AddTask onAdd={addTask}/>
         }
@@ -71,6 +72,7 @@ function Dashboard() {
         {err}
     </div>
     </Container>
+    </>
     );
 }
 

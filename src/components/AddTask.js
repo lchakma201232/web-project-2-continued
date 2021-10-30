@@ -31,7 +31,7 @@ function AddTask({onAdd}) {
                 <input type='checkbox' checked={reminder} value={reminder} onChange={(e)=>setReminder(e.currentTarget.checked)}/>
             </div>
 
-            <input className="btnx btnx-block" type='submit' value='Save Task' />
+            <input className="btn btn-success w-100" type='submit' value='Save Task' />
         </form>
     )
 }
