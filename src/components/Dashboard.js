@@ -10,9 +10,8 @@ function Dashboard() {
     const [showAddTask, setShowAddTask] = useState(false)
     const history = useHistory()
     const [tasks, setTasks] = useState([])
-
+    
     const loadTasks = async () => {
-        console.log("RUNNING");
         const requestMethodsGet = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -60,8 +59,6 @@ function Dashboard() {
 
     //Toggle Reminder
     const toggleReminder = async (id, reminder) => {
-        console.log(reminder);
-        console.log(tasks);
         const data = { 'uid': currentUser['uid'], 'id': id, 'reminder': !reminder };
         const requestMethods = {
             method: 'POST',
@@ -94,8 +91,10 @@ function Dashboard() {
                         (<Tasks tasks={tasks} onDelete={deleteTask} onToggle={toggleReminder} />)
                         : (<p>No Tasks To Show</p>)
                     }
-                    <Button variant="link" onClick={handleLogout}>Logout</Button>
-                    {err}
+                    <div className="d-flex justify-content-end w-100 pt-2">
+                        <Button variant="success" onClick={handleLogout}>Logout</Button>
+                        {err}
+                    </div>
                 </div>
             </Container>
         </>

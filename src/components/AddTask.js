@@ -1,19 +1,21 @@
 import { useState } from 'react'
+import DatePicker from 'react-datepicker'
 function AddTask({ onAdd }) {
     const [task, setText] = useState('')
-    const [date, setDay] = useState('')
+    const [date, setDay] = useState(new Date())
     const [reminder, setReminder] = useState(false)
+    const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
     const onSubmit = (e) => {
         e.preventDefault()
-
+        const taskDate =`${date.getDate()} ${days[date.getDay()]} ${date.getFullYear()}`;
+        console.log(taskDate);
         if (!task) {
             alert('Please add a task');
             return;
         }
-        onAdd({ task, date, reminder })
-
+        onAdd({ task, date: taskDate, reminder })
         setText('')
-        setDay('')
+        setDay(new Date())
         setReminder(false)
     }
     return (
@@ -24,7 +26,8 @@ function AddTask({ onAdd }) {
             </div>
             <div className='form-control'>
                 <label>Day</label>
-                <input type='text' placeholder='Add Day & Time' value={date} onChange={(e) => setDay(e.target.value)} />
+                <DatePicker selected={date} onChange={date => setDay(date)}/>
+                {/* <input type='text' placeholder='Add Day & Time' value={date} onChange={(e) => setDay(e.target.value)} /> */}
             </div>
             <div className='form-control form-control-check' style={{ display: 'flex' }}>
                 <label>Set Reminder</label>

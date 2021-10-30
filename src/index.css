@@ -70,6 +70,11 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  font-size: initial;
+  font-weight: bold;
+}
+.task p{
+  margin-bottom: initial;
 }
 
 .add-form {
