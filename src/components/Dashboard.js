@@ -1,78 +1,104 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Header from './Header'
 import Tasks from './Tasks'
 import AddTask from './AddTask'
-import {Container,Button} from "react-bootstrap"
+import { Container, Button } from "react-bootstrap"
 import { useAuth } from '../context/AuthContext'
-import {useHistory} from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 function Dashboard() {
-  const [showAddTask,setShowAddTask]=useState(false)
-  const history = useHistory()
-  const [tasks,setTasks] = useState([
-    {
-        id: 1,
-        text: 'Meeting with the boss',
-        day: 'Nov 5th at 2.30AM',
-        reminder: true,
-    },
-    {
-        id: 2,
-        text: 'Birthday of X',
-        day: 'Nov 20th at 11.00AM',
-        reminder: true,
-    },
-    {
-    id: 3,
-        text: 'Project deadline',
-        day: 'Dec 12th at 11.00PM',
-        reminder: true,
-    }
-])
-//Add Task
-    const addTask = (task) =>{
-    const id=Math.floor(Math.random()*10000)+1
-    const newTask = {id,...task}
-    setTasks([...tasks,newTask])
-}
+    const { logout, currentUser } = useAuth()
+    const [showAddTask, setShowAddTask] = useState(false)
+    const history = useHistory()
+    const [tasks, setTasks] = useState([])
 
-//Delete Task
-    const deleteTask = (id) => {
-        setTasks(tasks.filter((task)=>task.id!==id))
+    const loadTasks = async () => {
+        console.log("RUNNING");
+        const requestMethodsGet = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 'uid': currentUser['uid'] })
+        }
+        fetch(`${process.env.REACT_APP_SERVER}/getTasks`, requestMethodsGet).then(response => {
+            if (response.ok) {
+                return response.json()
+            }
+            throw response;
+        }).then(data => {
+            setTasks([...data]);
+        })
+    }
+    useEffect(() => {
+        let mounted=true;
+        if(mounted){
+            loadTasks();
+        }
+        return () => {mounted=false}
+    },[]);
+    //Add Task
+    const addTask = async (task) => {
+        const data = { 'uid': currentUser['uid'], ...task };
+        const requestMethods = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        }
+        await fetch(`${process.env.REACT_APP_SERVER}/addTask`, requestMethods);
+        loadTasks();
     }
 
-//Toggle Reminder
-    const toggleReminder = (id) => {
-        setTasks(tasks.map((task) => task.id===id ? {...task,reminder: !task.reminder}: task))
+    //Delete Task
+    const deleteTask = async (id) => {
+        const data = { 'uid': currentUser['uid'], 'id': id };
+        const requestMethods = {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        }
+        await fetch(`${process.env.REACT_APP_SERVER}/deleteTask`, requestMethods);
+        loadTasks();
+    }
+
+    //Toggle Reminder
+    const toggleReminder = async (id, reminder) => {
+        console.log(reminder);
+        console.log(tasks);
+        const data = { 'uid': currentUser['uid'], 'id': id, 'reminder': !reminder };
+        const requestMethods = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        }
+        await fetch(`${process.env.REACT_APP_SERVER}/updateTask`, requestMethods);
+        loadTasks();
     }
     const [err, setErr] = useState('')
-    const {logout,currentUser} = useAuth()
-    async function handleLogout(){
+
+    async function handleLogout() {
         setErr('');
-        try{
+        try {
             await logout();
             history.push('/login')
-        }catch{
+        } catch {
             setErr('Failed to logout');
         }
     }
 
     return (
         <>
-        <h2>{currentUser.email}</h2> 
-    <Container style={{marginTop: '15vh'}}>
-    <div className="w-100 container12">
-        <Header onAdd={() => setShowAddTask(!showAddTask)} showAdd={showAddTask}/>
-        {showAddTask && <AddTask onAdd={addTask}/>
-        }
-        {tasks.length > 0 ? 
-        (<Tasks tasks={tasks} onDelete={deleteTask} onToggle={toggleReminder}/>)
-        : (<p>No Tasks To Show</p>)
-        }
-        <Button variant="link" onClick={handleLogout}>Logout</Button>
-        {err}
-    </div>
-    </Container>
-    </>
+            <Container style={{ marginTop: '15vh' }}>
+                <div className="w-100 container12">
+                    <Header onAdd={() => setShowAddTask(!showAddTask)} showAdd={showAddTask} />
+                    {showAddTask && <AddTask onAdd={addTask} />
+                    }
+                    {tasks.length > 0 ?
+                        (<Tasks tasks={tasks} onDelete={deleteTask} onToggle={toggleReminder} />)
+                        : (<p>No Tasks To Show</p>)
+                    }
+                    <Button variant="link" onClick={handleLogout}>Logout</Button>
+                    {err}
+                </div>
+            </Container>
+        </>
     );
 }
 
