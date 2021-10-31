@@ -8,7 +8,6 @@ function AddTask({ onAdd }) {
     const onSubmit = (e) => {
         e.preventDefault()
         const taskDate =`${date.getDate()} ${days[date.getDay()]} ${date.getFullYear()}`;
-        console.log(taskDate);
         if (!task) {
             alert('Please add a task');
             return;

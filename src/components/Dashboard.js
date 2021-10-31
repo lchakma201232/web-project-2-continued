@@ -92,7 +92,7 @@ function Dashboard() {
                         : (<p>No Tasks To Show</p>)
                     }
                     <div className="d-flex justify-content-end w-100 pt-2">
-                        <Button variant="success" onClick={handleLogout}>Logout</Button>
+                        <Button variant="primary" onClick={handleLogout}>Logout</Button>
                         {err}
                     </div>
                 </div>
